@@ -1,60 +1,184 @@
-## Artifact Overview
+# Pre install docker environment
 
-Our experimental data were obtained on multiple servers equipped with Intel(R) Xeon(R) Gold 6458Q 128-core CPUs @ 3.1GHz and 512GB of memory. It might be impractical to obtain all the evaluation data within a short period on a personal computer.
-To address this, we provide two methods for evaluation:
+We have deployed the experimental environment on docker. Please pre install docker on your host
 
-1. **Short Evaluation**: A quick test to verify the artifact's functional correctness. While this does not guarantee exact final results, in our case, it reflected the overall trend of the final outcomes.  
-2. **Full Evaluation**: Comprehensive instructions to replicate the complete evaluation process.
+# Download
 
-## Getting Started
+Download docker image:
 
-To evaluate this artifact, please follow these sections in the provided order:
-- **Requirements**: Details the dependencies and setup needed.
-- **Short Evaluation**: Conducts a preliminary verification.
-
-## Requirements
-
-Our evaluation has been tested for `x86-64` and `Ubuntu 18..04 LTS`. 
-
-To run the evaluation, the following is required:
-* [Docker](https://docs.docker.com/engine/install/).
-    * Tested on version `24.0.2, build cb74dfc`
-* bash
-
-Load the Docker images for the following steps:
-
-1. Change directory: `cd evaluation-sampling/`
-2. The baselines and QSampler used in this experiment have been containerized as Docker images. You can pull them from dockerhub by running the following commands:
-```
-docker pull dockerqsf/jfs-smt-sampler:ubuntu1804
-docker pull dockerqsf/jfs_sampling_build:ubuntu1804
-docker pull dockerqsf/qsampler-build:ubuntu1804
-```
-3. The pulled images need to be renamed. Execute the following commands:
-```
-docker tag dockerqsf/jfs-smt-sampler:ubuntu1804 jfs-smtsampler:ubuntu1804
-docker tag dockerqsf/jfs_sampling_build:ubuntu1804 jfs_sampling_build:ubuntu1804
-docker tag dockerqsf/qsampler-build:ubuntu1804 qsampler-build:ubuntu1804
+```sh
+$ docker pull dockerqsf/fpse:tosem
 ```
 
-## Short Evaluation
+If the image is pulled successfully, please check there is an image named dockerqsf/fpse exists.
 
-This is a scaled evaluation to ensure functional correctness. It will run the tools on four formulas for each suite, two time per formula. 
+```sh
+$ docker images
+REPOSITORY                    TAG          IMAGE ID       CREATED             SIZE
+fpse                          tosem        97e77907a245   10 seconds ago      19.4GB
+```
 
-1. Change directory: `cd evaluation-sampling/experiments/`
-2. Run the tools on the FP suite: `./short-fp/run.sh`
-3. After a brief run, the results are saved in the `output.db` file located in the directory `../results-short-fp/`. You will need to install `sqlite3` to open it.
-4. Run the tools on the real-world program suite: `./short-program/run.sh`
-5. After a brief run, the results are saved in the `output.db` file located in the directory `../results-short-program/`. You will need to install `sqlite3` to open it.
-6. Delete the result folders: `rm -r ./results-short-fp/` and `rm -r ./results-short-program`. Otherwise, if the short evaluation is executed again it will fail.
 
-## Full-scale Evaluation (Optional)
+Start to run the container in interactive mode.
 
-This is a comprehensive evaluation that will obtain all the data presented in the paper.
+```sh
+$ docker run -it dockerqsf/fpse:tosem
+```
 
-1. Change directory: `cd evaluation-sampling/experiments/`
-2. The tool is executed to obtain the SMT coverage trend graph as the number of samples increases.: `./full-fp/run.sh` and `./full-program/run.sh`
-3. After the execution is completed, we obtain two `output.db` files in the paths `../results-full-fp` and `../results-full-program`, respectively. Then, by running `plot_trend.py`, we can generate Figures 2 and 11 as presented in the paper. It is worth noting that the `config` in `plot_trend.py` needs to be manually modified.
-4. The tool is executed to obtain the box plot of SMT coverage distribution.: `./full-fp-2000/run.sh` and `./full-program-2000/run.sh`
-5. After the execution is completed, we obtain two `output.db` files in the paths `../results-full-fp` and `../results-full-program`, respectively. Then, by running `plot_box.py`, we can generate Figure 12 as presented in the paper. It is worth noting that the `config` in `plot_box.py` needs to be manually modified. Then execute `table_a12.py` to obtain Table 5 from the paper.
-7. Delete the result folders: `rm -r ./results-full-fp/` and `rm -r ./results-full-program`. Otherwise, if the short evaluation is executed again it will fail.
+# Obtain experimental results
+
+Our experiments were performed on an Intel(R) Xeon(R) Gold 6458Q 128-core CPU @ 3.10GHz, 512GB of memory and the operating system is Ubuntu 18.04 LTS. 
+
+To obtain the results, a machine with similar CPUs is required. Moreover, our experiments were run in 60 parallel.
+
+## Analyze a program
+
+Navigate to `/home/aaa/analysis`. There are ten experiments in total, which are carried out in `exp-0`, `exp-1`, `exp-2`, `exp-3`, `exp-4`, `exp-5`, `exp-6`, `exp-7`, `exp-8` and `exp-9` respectively.
+The process of analyzing the program is shown in `exp-0`.
+
+```sh
+$ cd /home/aaa/analysis/exp-0
+```
+
+You need to set the parameters to run the script `run_solver.sh`: `./run_solver.sh [work_path] [file_name] [solver_type] [search_type]`, where
+
+- work_path: The path of program file location.
+- file_name: The program file name.
+- solver_type: The solving modes, e.g. (`jfs`, `jsampler`, `qsf`,`qsampler`). The bold fields are setting parameters.
+- search_type: The search modes, e.g. `bfs` and `dfs`.
+
+If you want to obtain experimental results for a single test program, e.g., `instances/gsl_acosh.c`. For example, obtain the experimental results of `qsampler+bfs`.
+
+```sh
+$ ./run_solver.sh instances gsl_acosh qsampler bfs
+```
+
+After running, log and test cases are generated in the corresponding directory, you can read the log as follow:
+
+```sh
+$ cat instances/gsl_acosh\&qsampler\&bfs.runlog 
+```
+
+```sh
+KLEE: Using Z3 solver backend
+KLEE: Replacing function "__isnanf" with "klee_internal_isnanf"
+KLEE: Replacing function "__isnan" with "klee_internal_isnan"
+KLEE: Replacing function "__isnanl" with "klee_internal_isnanl"
+KLEE: Replacing function "__isinff" with "klee_internal_isinff"
+KLEE: Replacing function "__isinf" with "klee_internal_isinf"
+KLEE: Replacing function "__isinfl" with "klee_internal_isinfl"
+KLEE: WARNING ONCE: function "gsl_ieee_set_mode" has inline asm
+KLEE: WARNING: QSampler: Z3 solving SAT and evaluate SUCCESS !
+KLEE: WARNING: QSampler: Z3 solving SAT and evaluate SUCCESS !
+KLEE: WARNING: QSampler: Z3 solving SAT and evaluate SUCCESS !
+KLEE: WARNING ONCE: calling external: log1p((FAdd w64 N0:(FSub w64 (ReadLSB w64 0 a)
+                        4607182418800017408)
+           (FSqrt w64 (FAdd w64 (FMul w64 4611686018427387904 N0) (FMul w64 N0 N0))))) at invhyp.c:39 7
+KLEE: WARNING: QSampler: Z3 solving SAT and evaluate SUCCESS !
+
+KLEE: done: total instructions = 84
+KLEE: done: completed paths = 5
+KLEE: done: partially completed paths = 0
+KLEE: done: generated tests = 5
+Total exec time: 5.081114e+03 ms
+```
+
+We can get the coverage information by running the script:
+
+```sh
+$ ./repaly.sh
+```
+
+```sh
+......# some info
+     ====  Replay Ktest ====
+===>/home/aaa/analysis/exp-0/instances/instances&gsl_acosh&qsampler&bfs_output/test000001.ktest
+CHECK:  KTests have been generated !
+===>python_res: invhyp.c
+===>gcno: /home/aaa/gsl/sys/.libs/invhyp.gcno
+gcno file is exit
+KTest : /home/aaa/analysis/exp-0/instances/instances&gsl_acosh&qsampler&bfs_output/test000001.ktest
+KLEE-REPLAY: klee_assume(0)!
+KLEE-REPLAY: NOTE: Test file: /home/aaa/analysis/exp-0/instances/instances&gsl_acosh&qsampler&bfs_output/test000001.ktest
+KLEE-REPLAY: NOTE: Arguments: "./gsl_acosh" 
+KLEE-REPLAY: NOTE: Storing KLEE replay files in /tmp/klee-replay-RPgytA
+KLEE-REPLAY: NOTE: EXIT STATUS: NORMAL (0 seconds)
+KLEE-REPLAY: NOTE: removing /tmp/klee-replay-RPgytA
+===>ktest_time_log: /home/aaa/analysis/exp-0/instances/instances&gsl_acosh&qsampler&bfs_output/test000001.time
+invhyp.c: No such file or directory
+===>cover line res:50.0 , 7
+invhyp.c: No such file or directory
+===>cover branch res:3
+...... # some info
+
+```
+
+Coverage information can be found in `res_all_60-0.txt`. The three columns are the name of benchmark, the code coverage, covered statements, covered branches, and the total execution time, respectively.
+
+```sh
+$ cat res_all_60-0.txt
+```
+
+```
+instances&gsl_acosh&qsf&bfs_output/ , 100.0 , 11, 7, 6
+```
+
+## Run in 50 parallel
+
+The machine used in our experiments has 128 cores and 512GB memory. Before running the script, please select the appropriate machine and complete parameter configuration.
+
+The execution time and solving time settings in the `run_solver.sh` script are 3600s and 60s respectively. This is a long execution time, and you can enter the script and modify it to your own needs.
+
+```sh
+$ vim run_solver.sh
+```
+
+```sh
+......
+MAX_EXE_TIME=3600
+SOLVER_TIME=60
+......
+```
+
+You can also modify the parallel quantity in the script:
+
+```sh
+$ vim multi_process.sh
+```
+
+```sh
+......
+pool = multiprocessing.Pool(processes=50) # parallel of 60
+......
+```
+
+Then you can use `run.sh` to execute all benchmarks in parallel.
+
+```sh
+$ ./run.sh
+```
+
+# Generating Figures for the Paper
+
+## Bar Charts (Figure 10)
+Go to the `res_bar/` directory, then run:
+```
+python3 plot_bar.py
+```
+The files `total_bfs_branch-60.pdf` and `total_dfs_branch-60.pdf` generated under `res_bar/bar-results/` correspond to Figure 10 in the paper.
+
+## Scatter Plots (Figure 14)
+Go to the `res_scatter/` directory, then run:
+```
+python3 plot_scatter.py
+```
+The files generated under `res_scatter/scatter-results/`:
+
+- bfs_JFS_vs_JFSampler.pdf
+- bfs_QSF_vs_QSampler.pdf
+- bfs_JFSampler_vs_QSampler.pdf
+- dfs_JFS_vs_JFSampler.pdf
+- dfs_QSF_vs_QSampler.pdf
+- dfs_JFSampler_vs_QSampler.pdf
+
+together form Figure 14 in the paper.
