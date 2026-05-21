@@ -15,7 +15,7 @@ SCRIPT_DIR="$( cd ${BASH_SOURCE[0]%/*} ; echo $PWD )"
 # JOBS="13"
 # USE_SCRIPT_CPU_PIN=1
 # USE_DISK_CACHE_FLUSH=1
-JOBS="70"
+JOBS="60"
 USE_SCRIPT_CPU_PIN=0
 USE_DISK_CACHE_FLUSH=0
 
@@ -24,8 +24,8 @@ BATCH_RUNNER="${SMT_RUNNER_ROOT}/batch-runner.py"
 
 
 # FIXME: Remove the echo
-TEST="echo"
-#TEST=""
+#TEST="echo"
+TEST=""
 START_TIME="$(date +%s)"
 
 TASK_SET_CMD=()

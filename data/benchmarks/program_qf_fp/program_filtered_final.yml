@@ -365,9 +365,6 @@ results:
 - benchmark: selected_smtlib2/gsl_integration_qaws_bfs_FP_2.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_219.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_interp2d_eval_deriv_xy_bfs_FP_2.smt2
   expected_sat: sat
   is_trivial: False
@@ -746,9 +743,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_laguerre_3_e_bfs_FP_1.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_17.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_hermite_prob_array_der_bfs_FP_0.smt2
   expected_sat: sat
   is_trivial: False
@@ -823,9 +817,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_airy_zero_Ai_e_bfs_FP_0.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_coulomb_wave_FG_array_bfs_FP_15.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_lnbeta_sgn_e_bfs_FP_2160.smt2
   expected_sat: sat
@@ -1706,9 +1697,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_15.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_19.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_hyperg_2F1_renorm_e_bfs_FP_28.smt2
   expected_sat: sat
   is_trivial: False
@@ -1897,9 +1885,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_gamma_e_bfs_FP_2.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_21.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_lambert_Wm1_e_bfs_FP_8.smt2
   expected_sat: sat
@@ -2188,9 +2173,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_multiroot_test_residual_bfs_FP_0.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_coulomb_wave_FGp_array_bfs_FP_15.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_lnpoch_sgn_e_bfs_FP_222.smt2
   expected_sat: sat
@@ -2540,9 +2522,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_conicalP_1_e_bfs_FP_139.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_18.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_bessel_kl_scaled_e_bfs_FP_9.smt2
   expected_sat: sat
   is_trivial: False
@@ -2586,9 +2565,6 @@ results:
   expected_sat: sat
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_dilog_e_bfs_FP_134.smt2
-  expected_sat: unknown
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_155.smt2
   expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_coupling_9j_e_bfs_FP_28.smt2
@@ -2855,9 +2831,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_hyperg_2F1_renorm_e_bfs_FP_32.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_hermite_func_der_e_bfs_FP_4.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_interp_eval_deriv2_bfs_FP_2.smt2
   expected_sat: sat
   is_trivial: False
@@ -2993,9 +2966,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_hyperg_1F1_int_e_bfs_FP_6.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_mathieu_a_e_bfs_FP_5.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_integration_qaws_bfs_FP_1835.smt2
   expected_sat: unknown
   is_trivial: False
@@ -3019,9 +2989,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_odeiv2_evolve_apply_bfs_FP_16.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_delta_bfs_FP_6.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_airy_Ai_deriv_scaled_e_bfs_FP_0.smt2
   expected_sat: sat
@@ -3103,9 +3070,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_Chi_e_bfs_FP_28.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_mathieu_a_e_bfs_FP_4.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_interp_eval_deriv_bfs_FP_4.smt2
   expected_sat: sat
@@ -3209,9 +3173,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_pochrel_e_bfs_FP_79.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_mathieu_a_e_bfs_FP_6.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_beta_inc_e_bfs_FP_151.smt2
   expected_sat: sat
   is_trivial: False
@@ -3272,9 +3233,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_fermi_dirac_m1_e_bfs_FP_0.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_16.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_airy_Bi_deriv_scaled_e_bfs_FP_9.smt2
   expected_sat: sat
   is_trivial: False
@@ -3314,9 +3272,6 @@ results:
 - benchmark: selected_smtlib2/gsl_poly_solve_quadratic_bfs_FP_3.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_hermite_func_der_e_bfs_FP_3.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_coupling_9j_e_bfs_FP_8.smt2
   expected_sat: sat
   is_trivial: False
@@ -3339,9 +3294,6 @@ results:
   expected_sat: sat
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_mathieu_Ms_e_bfs_FP_14.smt2
-  expected_sat: unknown
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_integration_qaws_bfs_FP_1840.smt2
   expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_lnbeta_sgn_e_bfs_FP_256.smt2
@@ -5009,9 +4961,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_complex_dilog_xy_e_bfs_FP_16.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_mathieu_se_e_bfs_FP_4.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_log_erfc_e_bfs_FP_4.smt2
   expected_sat: sat
   is_trivial: False
@@ -5118,9 +5067,6 @@ results:
   expected_sat: sat
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_dilog_e_bfs_FP_157.smt2
-  expected_sat: unknown
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_13.smt2
   expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_cdf_beta_Q_bfs_FP_54.smt2
@@ -5308,9 +5254,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_gamma_inc_P_e_bfs_FP_1.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_261.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_odeiv2_evolve_apply_bfs_FP_0.smt2
   expected_sat: sat
@@ -5773,9 +5716,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_hyperg_2F1_renorm_e_bfs_FP_8.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_gegenpoly_n_e_bfs_FP_20.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_interp2d_eval_bfs_FP_9.smt2
   expected_sat: sat
@@ -6496,9 +6436,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_multifit_nlinear_driver_bfs_FP_271.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_34.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_bessel_In_array_bfs_FP_6.smt2
   expected_sat: sat
@@ -7598,9 +7535,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_airy_Bi_scaled_e_bfs_FP_4.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_mathieu_a_e_bfs_FP_3.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_99.smt2
   expected_sat: sat
   is_trivial: False
@@ -7994,9 +7928,6 @@ results:
 - benchmark: selected_smtlib2/gsl_sf_bessel_Jn_e_bfs_FP_3.smt2
   expected_sat: sat
   is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_149.smt2
-  expected_sat: unknown
-  is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_coulomb_CL_e_bfs_FP_65.smt2
   expected_sat: unknown
   is_trivial: False
@@ -8185,9 +8116,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_monte_miser_integrate_bfs_FP_0.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_sf_bessel_Inu_scaled_e_bfs_FP_61.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_legendre_H3d_array_bfs_FP_1.smt2
   expected_sat: sat
@@ -8497,9 +8425,6 @@ results:
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_bessel_zero_Jnu_e_bfs_FP_9.smt2
   expected_sat: sat
-  is_trivial: False
-- benchmark: selected_smtlib2/gsl_root_test_interval_bfs_FP_174.smt2
-  expected_sat: unknown
   is_trivial: False
 - benchmark: selected_smtlib2/gsl_sf_bessel_jl_e_bfs_FP_2.smt2
   expected_sat: sat

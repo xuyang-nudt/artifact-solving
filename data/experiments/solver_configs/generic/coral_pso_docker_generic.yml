@@ -24,7 +24,7 @@ runner_config:
   backend:
     name: "Docker"
     config:
-      image: "dockeryangxu/coral-2015:ubuntu1804"
+      image: "dockerqsf/coral-2015:ubuntu1804"
       skip_tool_check: True # Faster
       # Use same UID/GID inside container as outside so the container
       # can write to our files.

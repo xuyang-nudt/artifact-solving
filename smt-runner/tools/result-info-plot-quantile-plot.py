@@ -10,6 +10,8 @@ add_smtrunner_to_module_search_path()
 from smtrunner import ResultInfo, DriverUtil, ResultInfoUtil, analysis, event_analysis
 import smtrunner.util
 import matplotlib.pyplot as plt
+from matplotlib.ticker import LogLocator
+import numpy
 
 import argparse
 import json
@@ -353,7 +355,7 @@ class ResultInfoFuzzingThroughputScores(ResultInfoGenericScore):
         index = 0
         dummy_point_y_value = 0.0
         if len(positive_ris) == 0:
-            _logger.warning('Using {} as dummy point time'.format(dummy_y_value))
+            _logger.warning('Using {} as dummy point time'.format(dummy_point_y_value))
         else:
             # Use the throughput of the point with the lowest throughput.
             # This avoids any big discontinuities at the beginning
@@ -407,14 +409,14 @@ class ResultInfoTimeScores(ResultInfoGenericScore):
             _logger.warning('Conflicts found when processing {}'.format(ri))
         if event_tag == 'sat':
             return 1
-        elif event_tag == 'unsat':
-            return 1
-        elif event_tag == 'sat_but_expected_unsat':
-            return -1
-        elif event_tag == 'unsat_but_expected_sat':
-            return -1
-        elif event_tag is None:
-            raise Exception("Event tag can't be None")
+        # elif event_tag == 'unsat':
+        #     return 1
+        # elif event_tag == 'sat_but_expected_unsat':
+        #     return -1
+        # elif event_tag == 'unsat_but_expected_sat':
+        #     return -1
+        # elif event_tag is None:
+        #     raise Exception("Event tag can't be None")
         else:
             # Any other event
             return 0
@@ -503,15 +505,16 @@ def main(args):
     )
     parser.add_argument('result_infos', nargs='+', help='Input YAML files')
     parser.add_argument('--title', default="", type=str)
-    parser.add_argument('--legend-name-map',dest='legend_name_map', default=None, type=str)
-    parser.add_argument('--legend-position',dest='legend_position', default='outside_bottom', choices=['outside_bottom', 'outside_right', 'inner', 'none'])
-    parser.add_argument('--report-negative-results',dest='report_negative_results', default=False, action='store_true')
-    parser.add_argument('--legend-font-size', dest='legend_font_size', default=None, type=int)
+    parser.add_argument('--title-font-size', dest='title_font_size', default=16, type=int)
+    parser.add_argument('--label-font-size', dest='label_font_size', default=16, type=int)
+    parser.add_argument('--tick-font-size', dest='tick_font_size', default=12, type=int)
+    parser.add_argument('--legend-name-map', dest='legend_name_map', default=None, type=str)
+    parser.add_argument('--legend-position', dest='legend_position', default='inner', choices=['outside_bottom', 'outside_right', 'inner', 'none'])
+    parser.add_argument('--report-negative-results', dest='report_negative_results', default=False, action='store_true')
+    parser.add_argument('--legend-font-size', dest='legend_font_size', default=12, type=int)
     parser.add_argument('--draw-style', dest='drawstyle', choices=['steps','default'], default='default', help='Line draw style')
-    parser.add_argument('--legend-num-columns', dest='legend_num_columns',
-            default=3,
-            type=int
-    )
+    parser.add_argument('--legend-num-columns', dest='legend_num_columns', default=1, type=int)
+
     actionGroup = parser.add_mutually_exclusive_group()
     actionGroup.add_argument('--ipython', action='store_true')
     actionGroup.add_argument('--pdf', help='Write graph to PDF')
@@ -556,17 +559,19 @@ def main(args):
       if not pargs.pdf.endswith('.pdf'):
         logging.error('--pdf argument must end with .pdf')
         return 1
-      if os.path.exists(pargs.pdf):
-        logging.error('Refusing to overwrite {}'.format(pargs.pdf))
-        return 1
+      # support overwite
+      # if os.path.exists(pargs.pdf):
+      #   logging.error('Refusing to overwrite {}'.format(pargs.pdf))
+      #   return 1
 
     if pargs.svg != None:
       if not pargs.svg.endswith('.svg'):
         logging.error('--pdf argument must end with .svg')
         return 1
-      if os.path.exists(pargs.svg):
-        logging.error('Refusing to overwrite {}'.format(pargs.svg))
-        return 1
+      # support overwrite
+      # if os.path.exists(pargs.svg):
+      #   logging.error('Refusing to overwrite {}'.format(pargs.svg))
+      #   return 1
 
     if pargs.true_type_fonts:
         smtrunner.util.set_true_type_font()
@@ -692,10 +697,13 @@ def main(args):
     # Now try to plot
     fig, ax = plt.subplots()
 
+    # setting title
     if len(pargs.title) > 0:
-        ax.set_title(pargs.title)
-    ax.set_xlabel(index_to_ri_scores[0].x_label)
-    ax.set_ylabel(index_to_ri_scores[0].y_label)
+        ax.set_title(pargs.title, fontsize=pargs.title_font_size)
+
+    # setting label
+    ax.set_xlabel(index_to_ri_scores[0].x_label, fontsize=pargs.label_font_size)
+    ax.set_ylabel(index_to_ri_scores[0].y_label, fontsize=pargs.label_font_size)
 
     # Add curves
     curves = [ ]
@@ -720,13 +728,34 @@ def main(args):
             name_for_legend = index_to_truncated_file_path[index]
         pickTolerance=4
         if pargs.error_bars:
+            # print("=========================")
+            # print(y_errors)
+            # deal with exception point
+            err_true=[]
+            err_true.append(y_errors[0])
+            err_true.append(y_errors[1])
+            for idx,err in enumerate(y_errors[0]):
+                if err>10:
+                    err_true[0][idx] = float(1)
+            for idx,err in enumerate(y_errors[1]):
+                if err>10:
+                    err_true[1][idx] = float(1)
+
             p = ax.errorbar(
                 x_points,
                 y_points,
-                yerr=y_errors,
+                yerr=err_true,
                 #picker=pickTolerance,
                 drawstyle=pargs.drawstyle,
                 markersize=pargs.point_size)
+            # p = ax.plot(
+            #     x_points,
+            #     y_points,
+            #     '-o' if pargs.points else '-',
+            #     # picker=pickTolerance,
+            #     drawstyle=pargs.drawstyle,
+            #     markersize=pargs.point_size)
+            # ax.fill_between(x_points, y_points - y_errors[0], y_points + y_errors[0], alpha=0.5)
         else:
             p = ax.plot(
                 x_points,
@@ -735,9 +764,23 @@ def main(args):
                 #picker=pickTolerance,
                 drawstyle=pargs.drawstyle,
                 markersize=pargs.point_size)
+
+            # for i in range(len(y_mean)):
+            #     ax.plot(np.array(X), np.array(y_mean[i]),
+            #             # marker=marker[i],
+            #             markersize=None,
+            #             markerfacecolor=None,
+            #             markeredgecolor=None,
+            #             alpha=0.5,
+            #             ls=None,
+            #             label=label[i],
+            #             linewidth=2)
+            #     ax.fill_between(X, y_mean[i] - y_std[i], y_mean[i] + y_std[i], alpha=0.5)
+            #
         curves.append(p[0])
 
         legend_names.append(name_for_legend)
+
     # Add legend
     assert len(legend_names) == len(curves)
     if pargs.legend_position == 'none':
@@ -748,7 +791,8 @@ def main(args):
             tuple(legend_names),
             ncol=pargs.legend_num_columns,
             loc='upper left',
-            fontsize=pargs.legend_font_size
+            fontsize=pargs.legend_font_size,
+            # frameon=False # no frame
         )
         fig.tight_layout()
     elif pargs.legend_position == 'outside_right':
@@ -801,16 +845,14 @@ def main(args):
           legend.draggable(True)
 
     # Adjust y-axis so it is a log plot everywhere except [-1,1] which is linear
-    ax.set_yscale('symlog', linthreshy=1.0, linscaley=0.1)
-
-    #set minor ticks on y-axis
-    from matplotlib.ticker import LogLocator
-    import numpy
     yAxisLocator = LogLocator(subs=numpy.arange(1.0,10.0))
+    ax.set_yscale('symlog', linthreshy=1, linscaley=0.1)
     ax.yaxis.set_minor_locator(yAxisLocator)
-    ax.yaxis.set_tick_params(which='minor', length=4)
-    ax.yaxis.set_tick_params(which='major', length=6)
-    #ax.grid()
+    ax.yaxis.set_tick_params(which='minor', length=4, labelsize=pargs.tick_font_size)
+    ax.yaxis.set_tick_params(which='major', length=6, labelsize=pargs.tick_font_size)
+    ax.grid()
+    ax.tick_params(axis='both', which='minor', length=4, labelsize=pargs.tick_font_size)
+    ax.tick_params(axis='both', which='major', length=6, labelsize=pargs.tick_font_size)
 
     # Y-axis bounds
     if pargs.max_exec_time:
@@ -819,13 +861,25 @@ def main(args):
     else:
         ax.set_ybound(lower=0.0, upper=round_away_from_zero_to_multiple_of(100, max_observed_y_value))
 
-    # X-axis bounds
+
+    """
+    X-axis always have data, so don't need to logLocator
+    """
+    # # # X-axis bounds
+    # ax.set_xscale('symlog', linthreshx=1, linscalex=1)
+    # xAxisLocator = LogLocator(base=0.01, subs=numpy.arange(1.0, 10.0))
+    # ax.xaxis.set_minor_locator(xAxisLocator)
+    # ax.xaxis.set_tick_params(which='minor', length=4, labelsize=pargs.tick_font_size)
+    # ax.xaxis.set_tick_params(which='major', length=6, labelsize=pargs.tick_font_size)
+
     # Round up to nearest multiple of 10
     assert max_observed_x_value >= 0.0
-    x_axis_upper_bound = round_away_from_zero_to_multiple_of(10, max_observed_x_value)
-    x_axis_lower_bound = round_away_from_zero_to_multiple_of(10, min_observed_x_value)
-    ax.set_xbound(lower=x_axis_lower_bound, upper=x_axis_upper_bound)
-    _logger.info('X axis bounds [{}, {}]'.format(x_axis_lower_bound, x_axis_upper_bound))
+    # x_axis_upper_bound = round_away_from_zero_to_multiple_of(10, max_observed_x_value)
+    # x_axis_lower_bound = round_away_from_zero_to_multiple_of(10, min_observed_x_value)
+    # ax.set_xbound(lower=x_axis_lower_bound, upper=x_axis_upper_bound)
+    # _logger.info('X axis bounds [{}, {}]'.format(x_axis_lower_bound, x_axis_upper_bound))
+    ax.set_xbound(lower=100.0, upper=max_observed_x_value)
+    _logger.info('X axis bounds [{}, {}]'.format(min_observed_x_value, max_observed_x_value))
 
 
     if pargs.ipython:
@@ -840,11 +894,12 @@ def main(args):
     elif pargs.pdf != None:
         fig.show()
         logging.info('Writing PDF to {}'.format(pargs.pdf))
-        fig.savefig(pargs.pdf)
+        # fig.savefig(pargs.pdf, format='pdf', bbox_inches='tight', pad_inches=0.01, dpi=300)
+        fig.savefig(pargs.pdf, format='pdf', bbox_inches='tight', pad_inches=0.01)
     elif pargs.svg != None:
         fig.show()
         logging.info('Writing svg to {}'.format(pargs.svg))
-        fig.savefig(pargs.svg)
+        fig.savefig(pargs.svg, format='pdf', bbox_inches='tight', pad_inches=0.01, dpi=300)
     else:
         plt.show()
     return 0

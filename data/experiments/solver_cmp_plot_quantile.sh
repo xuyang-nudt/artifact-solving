@@ -6,7 +6,19 @@ set -o pipefail
 
 SCRIPT_DIR="$( cd ${BASH_SOURCE[0]%/*} ; echo $PWD )"
 
-source ${SCRIPT_DIR}/common_1.sh
+source ${SCRIPT_DIR}/common.sh
+
+if [ $# -eq 0 ]; then
+  usage
+  exit 1
+fi
+bset="${1}"
+timeout="${2}"
+#bset_upper=$(echo "${bset}" | awk ' { print toupper($0) }')
+#shift
+#TOOL_OPTS+=("$@")
+
+#TOOL_OPTS+=(--title "JFS configuration comparison on ${bset_upper}")
 
 TOOL_NAME="result-info-plot-quantile-plot.py"
 
@@ -21,70 +33,44 @@ function usage() {
 TOOL="${SMT_RUNNER_ROOT}/tools/${TOOL_NAME}"
 
 TOOL_OPTS=( \
-  --max-exec-time 60 \
+  --max-exec-time ${timeout} \
   --mode time \
   --true-type-fonts \
+  --error-bars \
+#  --points \
+#  --title "${timeout}s timeout" \
+#  --title-font-size 14 \
+#  --label-font-size 12 \
+#  --legend-font-size 10 \
+#  --tick-font-size 10 \
+  --pdf "result/${bset}/portfolio_${bset}_err-1.pdf"
+#  --pdf "result/${bset}/ablation_${bset}.pdf"
 )
 
 
-if [ $# -eq 0 ]; then
-  usage
-  exit 1
-fi
-bset="${1}"
-bset_upper=$(echo "${bset}" | awk ' { print toupper($0) }')
-shift
-TOOL_OPTS+=("$@")
-
-#TOOL_OPTS+=(--title "JFS configuration comparison on ${bset_upper}")
 
 DIR_PREFIX="${MERGED_DIR}/${bset}"
 
-if [ "${bset}" = "qf_fp" ] || [ "${bset}" = "smtlib_qf_fp" ]; then
+if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ]; then
   SOLVER_NAMES=( \
-    z3 \
-    cvc5 \
-    mathsat5 \
     bitwuzla \
-    colibri \
-  #  jfs_lf_fail_fast \
-    jfs_lf_fail_fast_smart_seeds \
-    ol1v3r \
-    coral_pso \
-  #  coral_avm \
-    xsat \
-    gosat \
-    optsat \
-    optsatBitwuzla \
-#    portfolio_optsat_bitwuzla \
+    portfolio_bitwuzla_colibri \
+    portfolio_bitwuzla_jfs \
+    portfolio_bitwuzla_coral \
+    portfolio_bitwuzla_xsat \
+    portfolio_bitwuzla_gosat \
+    portfolio_bitwuzla_optsat
   )
-#  LEGEND_NAMES='["Z3", "CVC5", "MathSAT5", "Bitwuzla", "COLIBRI", "JFS", "OL1V3R", "CORAL", "XSat", "goSAT", "QSat", "QSat_Bitwuzla", "QSat+Bitwuzla"]'
-  LEGEND_NAMES='["Z3", "CVC5", "MathSAT5", "Bitwuzla", "COLIBRI", "JFS", "OL1V3R", "CORAL", "XSat", "goSAT", "QSF", "QSat+Bitwuzla"]'
-elif [ "${bset}" = "program_qf_fp" ]; then
+  LEGEND_NAMES='["Bitwuzla", "COLIBRI+Bitwuzla", "JFS+Bitwuzla", "CORAL+Bitwuzla", "XSat+Bitwuzla", "goSAT+Bitwuzla", "QSF+Bitwuzla"]'
+elif [ "${bset}" = "program_qf_fp" ] || [ "${bset}" = "program_qf_fp_600" ]; then
   SOLVER_NAMES=( \
-    z3 \
-    cvc5 \
-    mathsat5 \
     bitwuzla \
-    colibri \
-    jfs_lf_fail_fast_smart_seeds \
-    ol1v3r \
-    gosat \
-    optsat \
-#    optsatBitwuzla \
+    portfolio_bitwuzla_colibri \
+    portfolio_bitwuzla_jfs \
+    portfolio_bitwuzla_gosat \
+    portfolio_bitwuzla_optsat
   )
-  LEGEND_NAMES='["Z3", "CVC5", "MathSAT5", "Bitwuzla", "COLIBRI", "JFS", "OL1V3R", "goSAT", "QSF"]'
-else
-  SOLVER_NAMES=( \
-    colibri \
-    cvc5 \
-    bitwuzla \
-    jfs_lf_fail_fast_smart_seeds \
-    mathsat5 \
-    z3 \
-    portfolio_jfs_mathsat5 \
-  )
-  LEGEND_NAMES='["COLIBRI", "CVC5", "Bitwuzla", "JFS", "MathSAT5",  "Z3", "JFS+MathSAT5"]'
+  LEGEND_NAMES='["Bitwuzla", "COLIBRI+Bitwuzla", "JFS+Bitwuzla", "goSAT+Bitwuzla", "QSF+Bitwuzla"]'
 fi
 
 SOLVER_FILES=()

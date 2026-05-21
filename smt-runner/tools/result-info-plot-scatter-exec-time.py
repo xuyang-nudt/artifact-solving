@@ -10,6 +10,7 @@ add_smtrunner_to_module_search_path()
 from smtrunner import ResultInfo, DriverUtil, ResultInfoUtil, analysis, event_analysis
 import smtrunner.util
 import matplotlib.pyplot as plt
+import numpy as np
 
 import argparse
 import json
@@ -21,6 +22,9 @@ import random
 import re
 import sys
 import yaml
+
+# set minor ticks on y-axis
+from matplotlib.ticker import LogLocator
 
 _logger = None
 
@@ -41,7 +45,13 @@ def main(args):
     parser.add_argument('second_result_info',
         type=argparse.FileType('r'))
     parser.add_argument('--base', type=str, default="")
-    parser.add_argument('--point-size', type=float, default=25.0, dest='point_size')
+    parser.add_argument('--point-size', type=float, default=5, dest='point_size')
+    parser.add_argument('--title-switch', dest="title_switch", default=False, action='store_true')
+    parser.add_argument('--title-font-size', dest='title_font_size', default=14, type=int)
+    parser.add_argument('--label-font-size', dest='label_font_size', default=12, type=int)
+    parser.add_argument('--tick-font-size', dest='tick_font_size', default=10, type=int)
+    parser.add_argument('--annotate-font-size', dest='annotate_font_size', default=20, type=int)
+    parser.add_argument('--annotate-size', dest='annotate_size', default=30, type=int)
     parser.add_argument('--allow-merge-failures',
         dest='allow_merge_failures',
         default=False,
@@ -53,7 +63,8 @@ def main(args):
         dest='max_exec_time',
     )
     parser.add_argument('--title',
-        default="{num_keys} benchmarks, {num_points} jointly SAT or timeout"
+        # default="{num_keys} benchmarks, {num_both} jointly SAT, average speedup is {speedup}"
+        default = "{speedup}X speedup"
     )
     parser.add_argument("--xlabel",
         type=str,
@@ -162,7 +173,7 @@ def main(args):
     x_lt_y_keys = set()
     x_eq_y_keys = set()
     x_eq_y_and_is_timeout_keys = set()
-
+    # cnt = 0
     for key, raw_result_info_list in sorted(key_to_results_infos.items(), key=lambda kv:kv[0]):
         _logger.info('Ranking on "{}" : '.format(key))
         indices_to_use = []
@@ -229,6 +240,8 @@ def main(args):
         y_scatter_higher_error = y_scatter_point_bounds[2] - y_scatter_point_bounds[1]
         assert y_scatter_higher_error >= 0
 
+        # print(cnt)
+        # cnt += 1
         x_scatter_points.append(x_scatter_point)
         y_scatter_points.append(y_scatter_point)
         # Error bar points
@@ -291,14 +304,45 @@ def main(args):
     print("# incomparable: {}".format(len(bounds_incomparable_keys)))
     print("# of x = y and is timeout: {}".format(len(x_eq_y_and_is_timeout_keys)))
 
+    # print(x_scatter_points)
+    # print(y_scatter_points)
+    # print(len(x_scatter_points),len(y_scatter_points))
+    x_time_mean = np.mean(x_scatter_points, 0)
+    y_time_mean = np.mean(y_scatter_points, 0)
+    print(x_time_mean, y_time_mean, y_time_mean/x_time_mean)
+    x_a = 0
+    y_a = 0
+    cnt = 0
+    for i,v in enumerate(x_scatter_points):
+        x_v = x_scatter_points[i]
+        y_v = y_scatter_points[i]
+        if x_v>=60 or y_v>=60:
+            continue
+        x_a += x_v
+        y_a += y_v
+        cnt += 1
+    # xx_a = np.power(x_a, len(x_scatter_points))
+    # yy_a = np.power(y_a, len(y_scatter_points))
+    x_avg = x_a/cnt
+    y_avg = y_a/cnt
+    speed_up = round(y_avg/x_avg, 2)
+    print(x_avg, y_avg, speed_up)
+
     # Now plot
-    extend = 5 # modify yangxu
-    tickFreq = 5 # modify yangxu
+    extend = 5
+    tickFreq = 5
+    if pargs.max_exec_time == 60:
+        extend = 5  # modify yangxu
+        tickFreq = 5  # modify yangxu
+    elif pargs.max_exec_time == 600:
+        extend = 50 # modify yangxu
+        tickFreq = 50 # modify yangxu
     assert len(x_scatter_points) == len(y_scatter_points)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(4, 3))
+    # fig, ax = plt.subplots()
     fig.patch.set_alpha(0.0) # Transparent
     if pargs.error_bars:
-        splot = ax.errorbar(
+        ax.errorbar(
             x_scatter_points,
             y_scatter_points,
             xerr=x_scatter_errors,
@@ -311,17 +355,18 @@ def main(args):
             #capthick=10,
         )
     else:
-        splot = ax.scatter(x_scatter_points, y_scatter_points, picker=5, s=pargs.point_size)
+        ax.scatter(x_scatter_points, y_scatter_points, picker=5, s=pargs.point_size)
+
     xlabel = index_to_file_name[0] if pargs.xlabel is None else pargs.xlabel
     ylabel = index_to_file_name[1] if pargs.ylabel is None else pargs.ylabel
-    xlabel += pargs.axis_label_suffix
-    ylabel += pargs.axis_label_suffix
+    # xlabel += pargs.axis_label_suffix
+    # ylabel += pargs.axis_label_suffix
     ax.xaxis.label.set_color(pargs.axis_label_colour)
     ax.yaxis.label.set_color(pargs.axis_label_colour)
-    ax.tick_params(axis='x', colors=pargs.axis_label_colour)
-    ax.tick_params(axis='y', colors=pargs.axis_label_colour)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+    ax.tick_params(axis='x', colors=pargs.axis_label_colour, labelsize=pargs.tick_font_size)
+    ax.tick_params(axis='y', colors=pargs.axis_label_colour, labelsize=pargs.tick_font_size)
+    ax.set_xlabel(xlabel, fontsize=pargs.label_font_size)
+    ax.set_ylabel(ylabel, fontsize=pargs.label_font_size)
 
     ax.set_xlim(0,pargs.max_exec_time + extend)
     ax.set_ylim(0,pargs.max_exec_time + extend)
@@ -329,14 +374,34 @@ def main(args):
     ax.set_xticks(range(0, int(pargs.max_exec_time) + 1, tickFreq))
     ax.set_yticks(range(0, int(pargs.max_exec_time) + 1, tickFreq))
 
+    ax.set_yscale('symlog', linthreshy=0.1, linscaley=1)
+    ax.set_xscale('symlog', linthreshx=0.1, linscalex=1)
+    AxisLocator = LogLocator(base=10, subs=np.arange(1.0, 10.0))
+
+    ax.yaxis.set_minor_locator(AxisLocator)
+    ax.yaxis.set_tick_params(which='minor', length=2, labelsize=pargs.tick_font_size)
+    ax.yaxis.set_tick_params(which='major', length=3, labelsize=pargs.tick_font_size)
+    assert pargs.max_exec_time > 0.0
+    ax.set_ybound(lower=0.0, upper=pargs.max_exec_time)
+
+    ax.xaxis.set_minor_locator(AxisLocator)
+    ax.xaxis.set_tick_params(which='minor', length=2, labelsize=pargs.tick_font_size)
+    ax.xaxis.set_tick_params(which='major', length=3, labelsize=pargs.tick_font_size)
+    assert pargs.max_exec_time > 0.0
+    ax.set_xbound(lower=0.0, upper=pargs.max_exec_time)
+
     # Construct title keyword args
-    title_kwargs = {
-        'num_points': len(x_scatter_points),
-        'xlabel': xlabel,
-        'ylabel': ylabel,
-        'num_keys': len(key_to_results_infos.keys()),
-    }
-    ax.set_title(pargs.title.format(**title_kwargs))
+    if pargs.title_switch:
+        title_kwargs = {
+            'num_points': len(x_scatter_points),
+            'num_both': cnt,
+            'speedup': speed_up,
+            'xlabel': xlabel,
+            'ylabel': ylabel,
+            'num_keys': len(key_to_results_infos.keys()),
+            'timeout': int(pargs.max_exec_time)
+        }
+        ax.set_title(pargs.title.format(**title_kwargs), fontsize=pargs.title_font_size)
 
     # Identity line
     ax.plot([ 0 , pargs.max_exec_time + extend], [0, pargs.max_exec_time + extend], linewidth=1.0, color='black', )
@@ -351,25 +416,60 @@ def main(args):
             x_lt_value_to_display = len(x_lt_y_keys)
             x_gt_value_to_display = len(x_gt_y_keys)
 
+        # 添加左上中间的注释
         ax.annotate(
             '{}'.format(x_lt_value_to_display),
-            xy=(20,40), # modified yangxu
-            fontsize=40
+            xy=(0.4, 0.6),  # 相对位置，左上
+            xycoords='axes fraction',  # 使用相对坐标 (axes fraction)
+            ha='center', va='center',
+            fontsize=pargs.annotate_size, color='black'
         )
+
+        # 添加右下中间的注释
         ax.annotate(
             '{}'.format(x_gt_value_to_display),
-            xy=(40,20), # modified yangxu
-            fontsize=40
+            xy=(0.6, 0.4),  # 相对位置，右下
+            xycoords='axes fraction',  # 使用相对坐标 (axes fraction)
+            ha='center', va='center',
+            fontsize=pargs.annotate_size, color='black'
         )
+
+        # if pargs.max_exec_time == 60:
+        #     ax.annotate(
+        #         '{}'.format(x_lt_value_to_display),
+        #         xy=(20, 40),  # modified yangxu
+        #         # xy=(200,400), # modified yangxu
+        #         fontsize=40
+        #     )
+        #     ax.annotate(
+        #         '{}'.format(x_gt_value_to_display),
+        #         xy=(40, 20),  # modified yangxu
+        #         # xy=(400,200), # modified yangxu
+        #         fontsize=40
+        #     )
+        # elif pargs.max_exec_time == 600:
+        #     ax.annotate(
+        #         '{}'.format(x_lt_value_to_display),
+        #         # xy=(20, 40),  # modified yangxu
+        #         xy=(200, 400), # modified yangxu
+        #         fontsize=40
+        #     )
+        #     ax.annotate(
+        #         '{}'.format(x_gt_value_to_display),
+        #         # xy=(40, 20),  # modified yangxu
+        #         xy=(400, 200), # modified yangxu
+        #         fontsize=40
+        #     )
 
     # timeout point annotation
     if pargs.annotate_timeout_point:
         num_dual_timeouts = len(x_eq_y_and_is_timeout_keys)
         dual_timeout_txt = None
+        # dual_timeout_txt = '{} dual timeout'.format(num_dual_timeouts)
         if num_dual_timeouts == 1:
             dual_timeout_txt = '{} dual timeout'.format(num_dual_timeouts)
         else:
-            dual_timeout_txt = '{} dual timeouts'.format(num_dual_timeouts)
+            dual_timeout_txt = '{} dual timeout'.format(num_dual_timeouts)
 
         ax.annotate(dual_timeout_txt,
             # HACK -5 is to offset arrow properly
@@ -378,7 +478,7 @@ def main(args):
             arrowprops=dict(facecolor='black', shrink=0.05, width=1.5, headwidth=7.0),
             horizontalalignment='right', verticalalignment='center',
             bbox=dict(boxstyle='round',fc='None'),
-            fontsize=15)
+            fontsize=pargs.annotate_font_size)
 
     # Finally show
     if pargs.output is None:
@@ -386,7 +486,7 @@ def main(args):
     else:
         # For command line usage
         fig.show()
-        fig.savefig(pargs.output, format='pdf')
+        fig.savefig(pargs.output, format='pdf', bbox_inches='tight', pad_inches=0.01, dpi=30)
     return 0
 
 if __name__ == '__main__':
