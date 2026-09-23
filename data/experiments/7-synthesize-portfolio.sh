@@ -58,19 +58,19 @@ for bset in ${bsets[@]}; do
   case "${bset}" in
     smtlib_qf_fp)
       timeout=60
-      OTHER_SOLVERS=(colibri jfs coral xsat gosat optsat)
+      OTHER_SOLVERS=(colibri jfs coral xsat gosat stagesat optsat)
       ;;
     smtlib_qf_fp_600)
       timeout=600
-      OTHER_SOLVERS=(colibri jfs coral xsat gosat optsat)
+      OTHER_SOLVERS=(colibri jfs coral xsat gosat stagesat optsat)
       ;;
     program_qf_fp)
       timeout=60
-      OTHER_SOLVERS=(colibri jfs gosat optsat)
+      OTHER_SOLVERS=(colibri jfs gosat stagesat optsat)
       ;;
     program_qf_fp_600)
       timeout=600
-      OTHER_SOLVERS=(colibri jfs gosat optsat)
+      OTHER_SOLVERS=(colibri jfs gosat stagesat optsat)
       ;;
     *)
       echo "ERROR"

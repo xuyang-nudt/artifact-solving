@@ -7,22 +7,23 @@
 # List of solvers to use.
 # Look at `get_solver_config()` for the valid solver names.
 solvers=( \
-  z3 \
-  cvc5 \
-  mathsat5 \
-  bitwuzla \
-  colibri \
-  jfs \
-#  ol1v3r \
-#  coral \
+#  z3 \
+#  cvc5 \
+#  mathsat5 \
+#  bitwuzla \
+#  colibri \
+#  jfs \
+##  ol1v3r \
+##  coral \
 #  xsat \
-  gosat \
-  optsat \
-  optsat_soeacov \
-  optsat_soeadis \
-  optsat_nsga2 \
-  optsat_no_preprocess \
-#  optsatBitwuzla
+  stagesat
+#  gosat \
+#  optsat \
+#  optsat_soeacov \
+#  optsat_soeadis \
+#  optsat_nsga2 \
+#  optsat_no_preprocess \
+##  optsatBitwuzla
 )
 
 # Benchmark sets to use.
@@ -30,14 +31,15 @@ solvers=( \
 #bsets=(smtlib_qf_fp program_qf_fp smtlib_qf_fp_600 program_qf_fp_600)
 #bsets=(smtlib_qf_fp)
 #bsets=(program_qf_fp)
-bsets=(program_qf_fp_600)
+#bsets=(program_qf_fp_600)
 #bsets=(all_program_qf_fp)
 #bsets=(all_program_qf_fp_600)
+bsets=(test)
 
 # List of runs to perform.
 # It is assumed that the list is a list of integers.
-#ns=(0 1 2 3 4)
-ns=(0 1 2 3 4 5 6 7 8 9)
+ns=(0 1)
+#ns=(0 1 2 3 4 5 6 7 8 9)
 #ns=(0 1)
 
 SCRIPT_DIR="$( cd ${BASH_SOURCE[0]%/*} ; echo $PWD )"
@@ -63,6 +65,7 @@ MERGED_DIR="${SCRIPT_DIR}/merged${RUNS_DIR_SUFFIX}"
 
 function get_benchmark_base() {
   bset="$1"
+#  echo "aa:${bset}"
    base_dir="${SCRIPT_DIR}/../benchmarks"
    case "${bset}" in
      program_qf_fp*|all_program_qf_fp*)
@@ -70,6 +73,9 @@ function get_benchmark_base() {
      ;;
      smtlib_qf_fp*)
        echo "${base_dir}/smtlib_qf_fp"
+     ;;
+     test)
+       echo "${base_dir}/test"
      ;;
      *)
      echo "Unrecognised bset \"${bset}\""
@@ -90,6 +96,9 @@ function get_invocation_info() {
     ;;
     all_program_qf_fp*)
       echo "${INVOCATIONS_DIR}/program_qf_fp/program_qf_fp_sat_600.yml"
+    ;;
+    test)
+      echo "${INVOCATIONS_DIR}/test/test.yml"
     ;;
     *)
       echo "Unrecognised bset \"${bset}\""
@@ -119,7 +128,7 @@ function get_solver_config() {
         program_qf_fp|smtlib_qf_fp|all_program_qf_fp)
           echo "${CONFIG_ROOT}/z3_docker_generic.yml"
         ;;
-        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600)
+        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600|test)
           echo "${CONFIG_ROOT}/z3_docker_generic_600.yml"
         ;;
         *)
@@ -145,7 +154,7 @@ function get_solver_config() {
         program_qf_fp|smtlib_qf_fp|all_program_qf_fp)
           echo "${CONFIG_ROOT}/cvc5_docker_generic.yml"
         ;;
-        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600)
+        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600|test)
           echo "${CONFIG_ROOT}/cvc5_docker_generic_600.yml"
         ;;
         *)
@@ -158,7 +167,7 @@ function get_solver_config() {
         program_qf_fp|smtlib_qf_fp|all_program_qf_fp)
           echo "${CONFIG_ROOT}/bitwuzla_docker_generic.yml"
         ;;
-        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600)
+        program_qf_fp_600|smtlib_qf_fp_600|all_program_qf_fp_600|test)
           echo "${CONFIG_ROOT}/bitwuzla_docker_generic_600.yml"
         ;;
         *)
@@ -203,6 +212,29 @@ function get_solver_config() {
         ;;
         smtlib_qf_fp)
           echo "${CONFIG_ROOT}/xsat_docker_generic.yml"
+        ;;
+        test)
+          echo "${CONFIG_ROOT}/xsat_docker_generic.yml"
+        ;;
+        *)
+          echo "Unrecognised bset \"${bset}\""
+          exit 1
+      esac
+    ;;
+    stagesat)
+      case "${bset}" in
+        program_qf_fp*|all_program_qf_fp*)
+          # Not supported by XSat.
+          echo "SKIP"
+        ;;
+        smtlib_qf_fp_600)
+          echo "${CONFIG_ROOT}/stagesat_docker_generic_600.yml"
+        ;;
+        smtlib_qf_fp)
+          echo "${CONFIG_ROOT}/stagesat_docker_generic.yml"
+        ;;
+        test)
+          echo "${CONFIG_ROOT}/stagesat_docker_generic.yml"
         ;;
         *)
           echo "Unrecognised bset \"${bset}\""
@@ -357,6 +389,9 @@ function get_solver_name() {
     ;;
     xsat)
       echo "XSat"
+    ;;
+    stagesat)
+      echo "Stagesat"
     ;;
     gosat)
       echo "goSAT"

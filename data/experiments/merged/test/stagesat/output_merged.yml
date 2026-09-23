@@ -1,0 +1,82 @@
+misc:
+  runner: Stagesat
+results:
+- backend_timeout:
+  - false
+  - false
+  benchmark: 20190429-UltimateAutomizerSvcomp2019/double_req_bl_0240a_true-unreach-call.c_4.smt2
+  dsoes_wallclock_time:
+  - 6.204370927
+  - 6.009839107
+  event_tag:
+  - sat
+  - sat
+  exit_code:
+  - 0
+  - 0
+  expected_sat: sat
+  is_trivial: false
+  out_of_memory:
+  - false
+  - false
+  sat:
+  - sat
+  - sat
+  stderr_log_file:
+  - /0/wd/workdir-1/stderr.log.txt
+  - /1/wd/workdir-1/stderr.log.txt
+  stdout_log_file:
+  - /0/wd/workdir-1/stdout.log.txt
+  - /1/wd/workdir-1/stdout.log.txt
+  sys_cpu_time:
+  - 1.46
+  - 1.31
+  user_cpu_time:
+  - 16.31
+  - 15.54
+  wallclock_time:
+  - 7.136945730002481
+  - 6.890369633998489
+  working_directory:
+  - /0/wd/workdir-1
+  - /1/wd/workdir-1
+- backend_timeout:
+  - false
+  - false
+  benchmark: 20190429-UltimateAutomizerSvcomp2019/float_req_bl_0910a_true-unreach-call.c_0.smt2
+  dsoes_wallclock_time:
+  - 4.925355691
+  - 4.970288481
+  event_tag:
+  - sat
+  - sat
+  exit_code:
+  - 0
+  - 0
+  expected_sat: sat
+  is_trivial: false
+  out_of_memory:
+  - false
+  - false
+  sat:
+  - sat
+  - sat
+  stderr_log_file:
+  - /0/wd/workdir-0/stderr.log.txt
+  - /1/wd/workdir-0/stderr.log.txt
+  stdout_log_file:
+  - /0/wd/workdir-0/stdout.log.txt
+  - /1/wd/workdir-0/stdout.log.txt
+  sys_cpu_time:
+  - 1.23
+  - 0.99
+  user_cpu_time:
+  - 6.62
+  - 7.18
+  wallclock_time:
+  - 5.929795320000267
+  - 5.964523754999391
+  working_directory:
+  - /0/wd/workdir-0
+  - /1/wd/workdir-0
+schema_version: 0

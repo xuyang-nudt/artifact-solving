@@ -1,0 +1,8 @@
+results:
+- benchmark: 20190429-UltimateAutomizerSvcomp2019/float_req_bl_0910a_true-unreach-call.c_0.smt2
+  expected_sat: sat
+  is_trivial: false
+- benchmark: 20190429-UltimateAutomizerSvcomp2019/double_req_bl_0240a_true-unreach-call.c_4.smt2
+  expected_sat: sat
+  is_trivial: false
+schema_version: 0

@@ -12,6 +12,13 @@ data/benchmarks/program_qf_fp/
 data/benchmarks/smtlib_qf_fp/
 data/benchmarks/smtlib_qf_nia/
 data/benchmarks/smtlib_qf_nra/
+data/benchmarks/QF_BVFP/
+data/benchmarks/BVFP_normal/
+data/benchmarks/BVFP_notrival/
+data/benchmarks/smtlib_qf_fp (copy)/
+data/benchmarks/bvfp_no.py
+data/benchmarks/bvfp_normal.py
+data/benchmarks/bvfp_sat.py
 #data/benchmarks/QF_NIA_SAT.rar
 #data/benchmarks/QF_NRA_SAT.rar
 

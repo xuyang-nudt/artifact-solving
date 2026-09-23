@@ -36,14 +36,14 @@ TOOL_OPTS=( \
   --max-exec-time ${timeout} \
   --mode time \
   --true-type-fonts \
-  --error-bars \
+#  --error-bars \
 #  --points \
 #  --title "${timeout}s timeout" \
 #  --title-font-size 14 \
 #  --label-font-size 12 \
 #  --legend-font-size 10 \
 #  --tick-font-size 10 \
-  --pdf "result/${bset}/portfolio_${bset}_err.pdf"
+  --pdf "result/${bset}/portfolio_${bset}_cn.pdf"
 #  --pdf "result/${bset}/ablation_${bset}.pdf"
 )
 
@@ -59,9 +59,10 @@ if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ]; then
     portfolio_bitwuzla_coral \
     portfolio_bitwuzla_xsat \
     portfolio_bitwuzla_gosat \
+    portfolio_bitwuzla_stagesat \
     portfolio_bitwuzla_optsat
   )
-  LEGEND_NAMES='["Bitwuzla", "COLIBRI+Bitwuzla", "JFS+Bitwuzla", "CORAL+Bitwuzla", "XSat+Bitwuzla", "goSAT+Bitwuzla", "QSF+Bitwuzla"]'
+  LEGEND_NAMES='["Bitwuzla", "COLIBRI+Bitwuzla", "JFS+Bitwuzla", "CORAL+Bitwuzla", "XSat+Bitwuzla", "goSAT+Bitwuzla", "stagesat+Bitwuzla", "QSF+Bitwuzla"]'
 elif [ "${bset}" = "program_qf_fp" ] || [ "${bset}" = "program_qf_fp_600" ]; then
   SOLVER_NAMES=( \
     bitwuzla \

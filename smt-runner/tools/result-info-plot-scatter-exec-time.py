@@ -64,7 +64,8 @@ def main(args):
     )
     parser.add_argument('--title',
         # default="{num_keys} benchmarks, {num_both} jointly SAT, average speedup is {speedup}"
-        default = "{speedup}X speedup"
+        # default = "{speedup}X speedup"
+        default = "{speedup}倍加速"
     )
     parser.add_argument("--xlabel",
         type=str,
@@ -401,7 +402,15 @@ def main(args):
             'num_keys': len(key_to_results_infos.keys()),
             'timeout': int(pargs.max_exec_time)
         }
-        ax.set_title(pargs.title.format(**title_kwargs), fontsize=pargs.title_font_size)
+        from matplotlib.font_manager import FontProperties
+        import matplotlib as mpl
+        mpl.rcParams['pdf.fonttype'] = 3
+        mpl.rcParams['ps.fonttype'] = 3
+        # mpl.rcParams['pdf.use14corefonts'] = False
+        font_path = "/home/aaa/SIMSUN.ttf"
+        cn_font = FontProperties(fname=font_path)
+        ax.set_title(pargs.title.format(**title_kwargs), fontsize=pargs.title_font_size, fontproperties = cn_font)
+        # ax.set_title(pargs.title.format(**title_kwargs), fontsize=pargs.title_font_size)
 
     # Identity line
     ax.plot([ 0 , pargs.max_exec_time + extend], [0, pargs.max_exec_time + extend], linewidth=1.0, color='black', )

@@ -41,6 +41,7 @@ if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ]; then
       jfs \
       coral \
       xsat \
+      stagesat \
       gosat
     )
 #  LEGEND_NAMES='["Z3", "CVC5", "MathSAT5", "Bitwuzla", "COLIBRI", "JFS", "CORAL", "XSat", "goSAT"]'
@@ -75,7 +76,7 @@ for solverY in ${OTHER_NAMES[@]}; do
   #  --annotate-use-legacy-values \
     --title-switch \
 #    --annotate-timeout-point \
-    --output "result/${bset}/scatter_${solverXName}_${solverYName}_${timeout}.pdf"
+    --output "result/${bset}/scatter_${solverXName}_${solverYName}_${timeout}_cn.pdf"
   )
 
   TOOL_OPTS+=(--xlabel "${solverXName}")

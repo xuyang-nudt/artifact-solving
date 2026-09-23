@@ -43,15 +43,32 @@ def get_satisfiability_result(r, base_path):
         _logger.error('"{}" does not exist'.format(full_path))
         raise Exception('missing file')
     sat = 'unknown'
+    # with open(full_path, 'r') as f:
+    #     first_line = f.readline()
+    #     _logger.debug('Got first line \"{}\"'.format(first_line))
+    #     m = _RE_SAT_RESPONCE.match(first_line)
+    #     if m:
+    #         sat = m.group(1)
+    #     else:
+    #         _logger.warning('Failed to read sat result from "{}"'.format(f.name))
+    #         _fail_count += 1
+
     with open(full_path, 'r') as f:
-        first_line = f.readline()
-        _logger.debug('Got first line \"{}\"'.format(first_line))
-        m = _RE_SAT_RESPONCE.match(first_line)
-        if m:
-            sat = m.group(1)
-        else:
-            _logger.warning('Failed to read sat result from "{}"'.format(f.name))
-            _fail_count += 1
+        for line in f:
+            line = line.strip()
+
+            m = _RE_SAT_RESPONCE.match(line)
+
+            if m:
+                sat = m.group(1)
+                break
+
+    if sat == 'unknown':
+        _logger.warning(
+            'Failed to read sat result from "{}"'.format(full_path)
+        )
+        _fail_count += 1
+
     r_copy = r.copy()
     r_copy['sat'] = sat
     return r_copy

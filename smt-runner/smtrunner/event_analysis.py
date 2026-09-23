@@ -27,6 +27,8 @@ def get_event_analyser_from_runner_name(name, *nargs, **kwargs):
         return OL1V3RRunnerEventAnalyser(*nargs, **kwargs)
     if name == 'XSat':
         return XSatRunnerEventAnalyser(*nargs, **kwargs)
+    if name == 'Stagesat':
+        return StagesatRunnerEventAnalyser(*nargs, **kwargs)
     if name == 'Coral':
         return CoralRunnerEventAnalyser(*nargs, **kwargs)
     if name == 'JFS':
@@ -1259,6 +1261,70 @@ class XSatRunnerEventAnalyser(GenericRunnerEventAnalyser):
             self.error_type_error,
         ]
 
+class StagesatRunnerEventAnalyser(GenericRunnerEventAnalyser):
+    def __init__(self, *nargs, **kwargs):
+        super().__init__("Stagesat", *nargs, **kwargs)
+
+    _RE_NOT_IMPLEMENTED_PY = re.compile(r"raise NotImplementedError")
+    def error_not_implemented(self, geti):
+        ri = geti.ri
+        wd_base = geti.wd_base
+        if ri['exit_code'] != 1:
+            return None
+        with self.open_stderr_log(ri, wd_base) as f:
+            for l in f.readlines():
+                m = self._RE_NOT_IMPLEMENTED_PY.search(l)
+                if m:
+                    return 'stagesat_not_implemented_exception'
+        return None
+
+    _RE_UNICODE_ERROR_PY = re.compile(r"UnicodeDecodeError")
+    def error_unicode_exception(self, geti):
+        ri = geti.ri
+        wd_base = geti.wd_base
+        if ri['exit_code'] != 1:
+            return None
+        with self.open_stderr_log(ri, wd_base) as f:
+            for l in f.readlines():
+                m = self._RE_UNICODE_ERROR_PY.search(l)
+                if m:
+                    return 'stagesat_unicode_exception'
+        return None
+
+    _RE_TYPE_ERROR_PY = re.compile(r'^TypeError:\s+')
+    def error_type_error(self, geti):
+        ri = geti.ri
+        wd_base = geti.wd_base
+        if ri['exit_code'] != 1:
+            return None
+        with self.open_stderr_log(ri, wd_base) as f:
+            for l in f.readlines():
+                m = self._RE_TYPE_ERROR_PY.match(l)
+                if m:
+                    return 'stagesat_type_error'
+        return None
+
+
+    _RE_COMPILER_ERROR_MSG=re.compile(r'^build/foo.c:\d+:\d+:\s+error:')
+    def error_compiler_error(self, geti):
+        ri = geti.ri
+        wd_base = geti.wd_base
+        if ri['exit_code'] != 1:
+            return None
+        with self.open_stderr_log(ri, wd_base) as f:
+            for l in f.readlines():
+                m = self._RE_COMPILER_ERROR_MSG.match(l)
+                if m:
+                    return 'stagesat_compiler_error'
+
+    def get_solver_end_state_checker_fns(self):
+        # Child classes should override this
+        return [
+            self.error_not_implemented,
+            self.error_unicode_exception,
+            self.error_compiler_error,
+            self.error_type_error,
+        ]
 
 class CVC5RunnerEventAnalyser(GenericRunnerEventAnalyser):
     def __init__(self, *nargs, **kwargs):

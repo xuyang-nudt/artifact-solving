@@ -36,22 +36,24 @@ TOOL_OPTS+=("$@")
 
 DIR_PREFIX="${MERGED_DIR}/${bset}"
 #echo ${bset}
-if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ]; then
+if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ] || [ "${bset}" = "test" ]; then
   SOLVER_NAMES=( \
-    z3 \
-    cvc5 \
-    mathsat5 \
-    bitwuzla \
-    colibri \
-    jfs
-    coral \
-    xsat \
-    gosat \
-    optsat \
-    optsat_soeacov \
-    optsat_soeadis \
-    optsat_nsga2 \
-    optsat_no_preprocess \
+#    z3 \
+#    cvc5 \
+#    mathsat5 \
+#    bitwuzla \
+#    colibri \
+#    jfs
+#    coral \
+#    xsat \
+#    gosat \
+stagesat \
+    stagesat \
+#    optsat \
+#    optsat_soeacov \
+#    optsat_soeadis \
+#    optsat_nsga2 \
+#    optsat_no_preprocess \
 #    portfolio_bitwuzla_colibri \
 #    portfolio_bitwuzla_jfs_lf_fail_fast_smart_seeds \
 #    portfolio_bitwuzla_coral_pso \
@@ -59,7 +61,7 @@ if [ "${bset}" = "smtlib_qf_fp" ] || [ "${bset}" = "smtlib_qf_fp_600" ]; then
 #    portfolio_bitwuzla_gosat \
 #    portfolio_bitwuzla_optsat
   )
-  TOOL_OPTS+=(--index-for-compute-sets 9)
+  TOOL_OPTS+=(--index-for-compute-sets 1)
 elif [ "${bset}" = "program_qf_fp" ] || [ "${bset}" = "program_qf_fp_600" ]; then
   SOLVER_NAMES=( \
     z3 \

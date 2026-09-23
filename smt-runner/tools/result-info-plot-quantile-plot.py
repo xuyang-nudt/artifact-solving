@@ -393,11 +393,13 @@ class ResultInfoTimeScores(ResultInfoGenericScore):
 
     @property
     def x_label(self):
-        return 'Accumulated score'
+        # return 'Accumulated score'
+        return '累计得分'
 
     @property
     def y_label(self):
-        return 'Runtime (s)'
+        # return 'Runtime (s)'
+        return '运行时间 (秒)'
 
     def _compute_score(self, ri):
         # Look at the event tag
@@ -702,8 +704,18 @@ def main(args):
         ax.set_title(pargs.title, fontsize=pargs.title_font_size)
 
     # setting label
-    ax.set_xlabel(index_to_ri_scores[0].x_label, fontsize=pargs.label_font_size)
-    ax.set_ylabel(index_to_ri_scores[0].y_label, fontsize=pargs.label_font_size)
+    from matplotlib.font_manager import FontProperties
+    import matplotlib as mpl
+    mpl.rcParams['pdf.fonttype'] = 3
+    mpl.rcParams['ps.fonttype'] = 3
+    # mpl.rcParams['pdf.use14corefonts'] = False
+    font_path = "/home/aaa/SIMSUN.ttf"
+    cn_font = FontProperties(fname=font_path)
+
+    ax.set_xlabel(index_to_ri_scores[0].x_label, fontsize=pargs.label_font_size, fontproperties=cn_font)
+    ax.set_ylabel(index_to_ri_scores[0].y_label, fontsize=pargs.label_font_size, fontproperties=cn_font)
+    # ax.set_xlabel(index_to_ri_scores[0].x_label, fontsize=pargs.label_font_size)
+    # ax.set_ylabel(index_to_ri_scores[0].y_label, fontsize=pargs.label_font_size)
 
     # Add curves
     curves = [ ]
