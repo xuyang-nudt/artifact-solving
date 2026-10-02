@@ -37,7 +37,19 @@ copied = 0
 removed = 0
 missing = 0
 
+TARGET_DIR = "imperial_svcomp_float-benchs_svcomp_mea8000.x86_64"
+
 for benchmark, a_sat in a_results.items():
+
+    # benchmark 路径中某一级目录是否为 TARGET_DIR
+    parts = benchmark.split("/")
+
+    if TARGET_DIR not in parts:
+        continue
+
+    # 只处理 .smt2
+    if not benchmark.endswith(".smt2"):
+        continue
 
     b_sat = b_results.get(benchmark)
 
